@@ -1,0 +1,39 @@
+#include <DHTesp.h>
+
+const int DHT_PIN = 13;
+const int IRRIGACAO = 18;
+const int DRENAGEM = 19;
+
+DHTesp dhtSensor;
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Hello, ESP32!");
+
+  dhtSensor.setup(DHT_PIN, DHTesp::DHT22);
+
+  pinMode(IRRIGACAO, OUTPUT);
+  pinMode(DRENAGEM, OUTPUT);
+}
+
+void loop() {
+  float humidity = dhtSensor.getHumidity();
+  float temperature = dhtSensor.getTemperature();
+
+  Serial.println("Temperatura: " + String(temperature) + "°C");
+  Serial.println("Umidade: " + String(humidity) + "%");
+
+  if (temperature > 35) {
+    digitalWrite(IRRIGACAO, HIGH);  // Liga o LED de irrigação
+  } else {
+    digitalWrite(IRRIGACAO, LOW);   // Desliga o LED de irrigação
+  }
+
+  if (humidity > 70) {
+    digitalWrite(DRENAGEM, HIGH);   // Liga o LED de drenagem
+  } else {
+    digitalWrite(DRENAGEM, LOW);    // Desliga o LED de drenagem
+  }
+
+  delay(5000);
+}
